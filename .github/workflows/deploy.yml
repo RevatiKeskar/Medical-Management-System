@@ -3,7 +3,7 @@ name: Deploy to Azure Web App
 on:
   push:
     branches:
-      - master  # or master, if your default branch is that
+      - master  # Because your repo uses 'master'
 
 jobs:
   build-and-deploy:
@@ -28,12 +28,9 @@ jobs:
         run: |
           docker build . -t myappimage
 
-      - name: Push image to Azure Container Registry (Optional)
-        run: echo "Skipping image push (using local build)"
-
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: my-appservice-plan  # your exact app name
+          app-name: my-appservice-plan  # Change if your actual app name is different
           slot-name: production
           images: myappimage
