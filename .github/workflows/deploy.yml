@@ -1,0 +1,35 @@
+name: Deploy to Azure Web App
+
+on:
+  push:
+    branches:
+      - master  # or master, if your default branch is that
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build Docker image
+        run: |
+          docker build . -t myappimage
+
+      - name: Push image to Azure Container Registry (Optional)
+        run: echo "Skipping image push (using local build)"
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: my-appservice-plan  # your exact app name
+          slot-name: production
+          images: myappimage
